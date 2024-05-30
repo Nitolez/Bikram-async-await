@@ -87,23 +87,23 @@ const printImageAndName = async () => {
 
 const getRandomDogImage = async () => {
 
-        try {
-            const resp = await fetch(`https://dog.ceo/api/breeds/image/random`, { method: 'GET' })
-    
-            if (resp.ok) {
-                const data = await resp.json()
-                return data.message
-            } else {
-                throw console.log("Error")
-            }
-        } catch (err) {
-            console.log("Error al obtener imagen")
+    try {
+        const resp = await fetch(`https://dog.ceo/api/breeds/image/random`, { method: 'GET' })
+
+        if (resp.ok) {
+            const data = await resp.json()
+            return data.message
+        } else {
+            throw console.log("Error")
         }
+    } catch (err) {
+        console.log("Error al obtener imagen")
     }
-    
-    getRandomDogImage()
-        .then((imagen) => { console.log(imagen) })
-        .catch((error) => { console.log(error) })
+}
+
+getRandomDogImage()
+    .then((imagen) => { console.log(imagen) })
+    .catch((error) => { console.log(error) })
 
 
 /*Ejercicio 5.- Declara una función **getRandomPokemonImage** que retorne la url de la imagen de un 
@@ -142,7 +142,7 @@ getRandomPokemonImage()
 /*Usando la api de Rick and Morty https://rickandmortyapi.com/ y sólo async/await:
 
 Ejercicio 7.- Declara una función **getRandomCharacter** que retorne un personaje aleatorio.*/
-    
+
 const getRandomCharacter = async () => {
     try {
         const resp = await fetch('https://rickandmortyapi.com/api/character');
@@ -165,7 +165,7 @@ const getRandomCharacter = async () => {
         console.log('Error');
         throw error;
     }
-} 
+}
 
 getRandomCharacter()
     .then((character) => { console.log(character); })
@@ -175,4 +175,39 @@ getRandomCharacter()
 /*Ejercicio 8.- Declara una función **getRandomCharacterInfo** que retorne de un personaje su imagen, 
 nombre, episodios en los que aparece y el nombre del primer episodio en el que aparece + fecha de estreno, 
 tendrás que hacer otro fetch para llegar a los ultimos datos. 
-Formato de retorno => (return {img, name, episodes, firstEpisode, dateEpisode})*/   
+Formato de retorno => (return {img, name, episodes, firstEpisode, dateEpisode})*/
+
+
+const getRandomCharacterInfo = async () => {
+    try {
+        const resp = await fetch('https://rickandmortyapi.com/api/character');
+        if (resp.ok) {
+            const data = await resp.json();
+            const totalCharacters = data.info.count;
+            const randomId = Math.floor(Math.random() * totalCharacters) + 1;
+
+            const randomResp = await fetch(`https://rickandmortyapi.com/api/character/${randomId}`);
+            if (randomResp.ok) {
+                const randomChar = await randomResp.json();
+                const { image: img, name, episode: episodes } = randomChar;
+                const firstEpisodeResp = await fetch(episodes[0]);
+                if (firstEpisodeResp.ok) {
+                    const firstEpisodeData = await firstEpisodeResp.json();
+                    const { name: firstEpisode, air_date: dateEpisode } = firstEpisodeData;
+
+                    return { img, name, episodes, firstEpisode, dateEpisode };
+                } else {
+                    throw console.log('Error al obtener el primer episodio');
+                }
+
+            } else {
+                throw console.log('Error al obtener datos del personaje aleatorio');
+            }
+        } else {
+            throw console.log('Error al obtener el número total de personajes');
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
