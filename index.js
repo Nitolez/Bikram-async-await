@@ -139,6 +139,36 @@ getRandomPokemonImage()
     .catch((error) => { console.log(error); });
 
 
+/*Ejercicio 6.- Declara una función **printPugVsPikachu** que pinte la batalla entre "Pug" y "Pikachu" (no se testea)*/
+
+const printPugVsPikachu = async () => {
+    try{
+        const img1 = await fetch (`https://pokeapi.co/api/v2/pokemon/pikachu`)
+        const img2 = await fetch (`https://dog.ceo/api/breed/pug/images/random`)
+        if(img1.ok && img2.ok){
+            const data = await img1.json()
+            const dato = await img2.json()
+            const imagenPikachu = data.sprites.back_shiny_female
+            const imagenPug = dato.message
+            return imagenPikachu, imagenPug
+        }else { throw console.log("Error")}
+    } catch (error) {
+     console.log(error)
+    }
+}
+
+printPugVsPikachu()
+    .then((imagenPikachu, imagenPug) => {
+        const printImgs = document.querySelector("#tarjeta")
+        const imagenPika = document.createElement("img")
+        const imagenPuga = document.createElement("img")
+        
+        imagenPika.src = imagenPikachu
+        imagenPuga.src = imagenPug
+
+        printImgs.append(imagenPika, imagenPuga)
+
+     } )
 /*Usando la api de Rick and Morty https://rickandmortyapi.com/ y sólo async/await:
 
 Ejercicio 7.- Declara una función **getRandomCharacter** que retorne un personaje aleatorio.*/
